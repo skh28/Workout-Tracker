@@ -120,6 +120,8 @@ Workout payload includes: `name`, `description`, `workout_type`, `started_at`, `
 
 Data is stored in SQLite on the instance; it can be lost on redeploy. For persistent data later, add Railway Postgres and set `DATABASE_URL`, then run `alembic upgrade head` once.
 
+**If you see "Application failed to respond":** Open your service → **Deployments** → click the latest deploy → **View logs**. Then: (1) Set **Start Command** (Settings → Deploy) to `sh run.sh` or `uvicorn app.main:app --host 0.0.0.0 --port $PORT` so the app listens on Railway’s port. (2) Ensure **Variables** includes `SECRET_KEY`. (3) Fix any Python or import errors shown in the logs.
+
 ---
 
 ## Deploy to AWS Elastic Beanstalk
