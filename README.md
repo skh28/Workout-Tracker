@@ -32,14 +32,13 @@ tiny-api/
 │   └── app.js
 ├── alembic/              # Migrations
 ├── database.db           # SQLite (created at runtime)
+├── Procfile              # Elastic Beanstalk: uvicorn start command
 ├── requirements.txt
 ├── .env                  # Optional: SECRET_KEY, etc.
 └── README.md
 ```
 
 ## Setup
-
-Some files (e.g. `.env`, `.venv`, `database.db`) are not in the repo (see `.gitignore`). Create or generate them as below.
 
 1. **Clone or open the project** and go to the project root.
 
@@ -89,6 +88,30 @@ The root URL serves the frontend (login, register, forgot password, reset passwo
 | **Workouts** | `POST /workouts`, `GET /workouts`, `GET /workouts/{id}`, `PATCH /workouts/{id}`, `DELETE /workouts/{id}` (user-scoped, require Bearer token) |
 
 Workout payload includes: `name`, `description`, `workout_type`, `started_at`, `duration_minutes`, `avg_heart_rate_bpm`, `active_calories`, `total_calories`.
+
+## Deploy to AWS Elastic Beanstalk
+
+1. **Install EB CLI** (one-time): `pip install awsebcli` (or use AWS Console and upload a zip).
+
+2. **Create app and environment** from project root:
+   ```bash
+   eb init -p "Python 3.11" tiny-api --region us-east-1
+   eb create
+   ```
+   When prompted, pick a region and environment name (or use defaults).
+
+3. **Set environment variables** in the Elastic Beanstalk console (Configuration → Software → Environment properties), or with the CLI:
+   ```bash
+   eb setenv SECRET_KEY="$(openssl rand -hex 32)"
+   ```
+   For production, also set `FRONTEND_BASE_URL` to your EB URL (e.g. `https://your-env.us-east-1.elasticbeanstalk.com`) so password-reset links work.
+
+4. **Deploy** (after the first `eb create`, use this to deploy updates):
+   ```bash
+   eb deploy
+   ```
+
+The app uses the **Procfile** (`web: uvicorn app.main:app --host 0.0.0.0 --port 8000`) and **requirements.txt**; EB installs dependencies and runs uvicorn. By default the app uses SQLite on the instance (data can be lost on redeploy or scaling). For persistent data, add an RDS database and set `DATABASE_URL`, then run `alembic upgrade head` (e.g. via an `.ebextensions` command or one-off).
 
 ## Environment variables
 
