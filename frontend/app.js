@@ -240,7 +240,6 @@ async function loadWorkouts() {
     li.innerHTML = `
       <div>
         <strong>${escapeHtml(w.name)}</strong>
-        <span class="workout-type">${escapeHtml(w.workout_type)}</span>
         <div class="workout-meta">
           ${started} · ${w.duration_minutes} min
           ${w.active_calories != null ? ` · ${w.active_calories} cal` : ''}
@@ -281,7 +280,7 @@ document.getElementById('workout-form').addEventListener('submit', async (e) => 
   const body = {
     name: form.name.value.trim(),
     description: form.description.value.trim() || null,
-    workout_type: form.workout_type.value.trim(),
+    workout_type: '',
     started_at: startedAt,
     duration_minutes: parseInt(form.duration_minutes.value, 10) || 0,
     avg_heart_rate_bpm: form.avg_heart_rate_bpm.value
@@ -328,9 +327,9 @@ function showEditForm(w) {
   const card = document.getElementById('edit-workout-card');
   const form = document.getElementById('workout-edit-form');
   form.id.value = w.id;
+  form.workout_type.value = w.workout_type || '';
   form.name.value = w.name || '';
   form.description.value = w.description || '';
-  form.workout_type.value = w.workout_type || '';
   const started = w.started_at ? new Date(w.started_at) : new Date();
   started.setMinutes(started.getMinutes() - started.getTimezoneOffset());
   form.started_at.value = started.toISOString().slice(0, 16);

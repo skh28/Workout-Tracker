@@ -63,7 +63,6 @@
           <form id="workout-form">
             <input type="text" name="name" placeholder="Name (e.g. Morning run)" required />
             <input type="text" name="description" placeholder="Description (optional)" />
-            <input type="text" name="workout_type" placeholder="Type (e.g. run, strength)" required />
             <input type="datetime-local" name="started_at" required />
             <input type="number" name="duration_minutes" placeholder="Duration (minutes)" min="1" required />
             <input type="number" name="avg_heart_rate_bpm" placeholder="Avg heart rate (bpm)" min="0" />
@@ -78,9 +77,9 @@
           <h2>Edit workout</h2>
           <form id="workout-edit-form">
             <input type="hidden" name="id" />
+            <input type="hidden" name="workout_type" />
             <input type="text" name="name" placeholder="Name" required />
             <input type="text" name="description" placeholder="Description (optional)" />
-            <input type="text" name="workout_type" placeholder="Type" required />
             <input type="datetime-local" name="started_at" required />
             <input type="number" name="duration_minutes" placeholder="Duration (minutes)" min="1" required />
             <input type="number" name="avg_heart_rate_bpm" placeholder="Avg heart rate (bpm)" min="0" />
