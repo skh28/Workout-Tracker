@@ -39,6 +39,8 @@ tiny-api/
 
 ## Setup
 
+Some files (e.g. `.env`, `.venv`, `database.db`) are not in the repo (see `.gitignore`). Create or generate them as below.
+
 1. **Clone or open the project** and go to the project root.
 
 2. **Create a virtual environment and install dependencies:**

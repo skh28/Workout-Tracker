@@ -1,0 +1,33 @@
+# Secrets
+.env
+.env.*
+
+# Virtual environment
+.venv/
+venv/
+env/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+*.egg-info/
+.eggs/
+dist/
+build/
+
+# Local database
+database.db
+*.db
+
+# IDE / OS
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+
+# Alembic (optional: uncomment if you don't want to track generated migrations)
+# alembic/versions/*.py
