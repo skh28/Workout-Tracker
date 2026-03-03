@@ -426,3 +426,15 @@ function checkResetTokenInUrl() {
   }
 }
 
+// Show/hide password toggles
+document.querySelectorAll('.toggle-password').forEach((btn) => {
+  btn.addEventListener('click', () => {
+    const wrap = btn.closest('.password-wrap');
+    const input = wrap.querySelector('input');
+    const isPassword = input.type === 'password';
+    input.type = isPassword ? 'text' : 'password';
+    btn.textContent = isPassword ? 'Hide' : 'Show';
+    btn.setAttribute('aria-label', isPassword ? 'Hide password' : 'Show password');
+  });
+});
+

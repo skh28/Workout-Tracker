@@ -76,6 +76,21 @@ body {
   color: #000;
 }
 
+.password-wrap {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.password-wrap input {
+  flex: 1;
+  min-width: 0;
+}
+.password-wrap .toggle-password {
+  flex-shrink: 0;
+  padding: 0.5rem 0.75rem;
+  font-size: 0.85rem;
+}
+
 .auth-form input,
 #workout-form input {
   display: block;

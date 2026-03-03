@@ -89,6 +89,39 @@ The root URL serves the frontend (login, register, forgot password, reset passwo
 
 Workout payload includes: `name`, `description`, `workout_type`, `started_at`, `duration_minutes`, `avg_heart_rate_bpm`, `active_calories`, `total_calories`.
 
+## Deploy to Railway (no AWS account)
+
+1. **Push your code to GitHub** (if you haven’t already):
+   ```bash
+   git add .
+   git commit -m "Ready for deploy"
+   git push origin main
+   ```
+
+2. **Sign up:** Go to [railway.app](https://railway.app) and sign in with **GitHub**.
+
+3. **New project:** Click **New Project** → **Deploy from GitHub repo** → choose your `tiny-api` repo (grant access if asked).
+
+4. **Configure the service:**  
+   - Railway will detect Python and use `requirements.txt`.  
+   - If it doesn’t pick a start command, open **Settings** → **Deploy** and set **Start Command** to:
+     ```bash
+     uvicorn app.main:app --host 0.0.0.0 --port $PORT
+     ```
+   - (The repo **Procfile** uses `$PORT` too; if Railway uses it, you don’t need to set Start Command.)
+
+5. **Add env var:** Open **Variables** → **Add variable**:
+   - Name: `SECRET_KEY`  
+   - Value: generate one with `openssl rand -hex 32` in your terminal and paste it.
+
+6. **Deploy:** Railway will build and deploy. When it’s done, open **Settings** → **Networking** → **Generate domain** to get a public URL (e.g. `https://tiny-api-production-xxxx.up.railway.app`).
+
+7. **Optional:** Set `FRONTEND_BASE_URL` to that URL (in **Variables**) so password-reset emails point to the live app.
+
+Data is stored in SQLite on the instance; it can be lost on redeploy. For persistent data later, add Railway Postgres and set `DATABASE_URL`, then run `alembic upgrade head` once.
+
+---
+
 ## Deploy to AWS Elastic Beanstalk
 
 1. **Install EB CLI** (one-time): `pip install awsebcli` (or use AWS Console and upload a zip).
@@ -111,7 +144,7 @@ Workout payload includes: `name`, `description`, `workout_type`, `started_at`, `
    eb deploy
    ```
 
-The app uses the **Procfile** (`web: uvicorn app.main:app --host 0.0.0.0 --port 8000`) and **requirements.txt**; EB installs dependencies and runs uvicorn. By default the app uses SQLite on the instance (data can be lost on redeploy or scaling). For persistent data, add an RDS database and set `DATABASE_URL`, then run `alembic upgrade head` (e.g. via an `.ebextensions` command or one-off).
+The app uses the **Procfile** (`web: uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8000}`) and **requirements.txt**; EB installs dependencies and runs uvicorn. By default the app uses SQLite on the instance (data can be lost on redeploy or scaling). For persistent data, add an RDS database and set `DATABASE_URL`, then run `alembic upgrade head` (e.g. via an `.ebextensions` command or one-off).
 
 ## Environment variables
 
