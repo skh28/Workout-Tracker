@@ -2,7 +2,7 @@ from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import get_settings
@@ -44,4 +44,9 @@ if FRONTEND_DIR.is_dir():
     @app.get("/")
     def serve_frontend():
         return FileResponse(FRONTEND_DIR / "index.html")
+else:
+
+    @app.get("/")
+    def root():
+        return JSONResponse({"message": "API running", "docs": "/docs", "health": "/health"})
 
