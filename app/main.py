@@ -1,9 +1,11 @@
+import sys
 from pathlib import Path
 
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, JSONResponse
 from fastapi.staticfiles import StaticFiles
+from starlette.middleware.base import BaseHTTPMiddleware
 
 from app.core.config import get_settings
 from app.db.database import create_db_and_tables
@@ -13,6 +15,15 @@ from app.routers import auth, users, workouts
 settings = get_settings()
 app = FastAPI(title=settings.app_name)
 
+
+class RequestLogMiddleware(BaseHTTPMiddleware):
+    async def dispatch(self, request, call_next):
+        print(f"[REQUEST] {request.method} {request.url.path}", flush=True)
+        response = await call_next(request)
+        return response
+
+
+app.add_middleware(RequestLogMiddleware)
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
