@@ -118,9 +118,27 @@ Workout payload includes: `name`, `description`, `workout_type`, `started_at`, `
 
 7. **Optional:** Set `FRONTEND_BASE_URL` to that URL (in **Variables**) so password-reset emails point to the live app.
 
-Data is stored in SQLite on the instance; it can be lost on redeploy. For persistent data later, add Railway Postgres and set `DATABASE_URL`, then run `alembic upgrade head` once.
+Data is stored in SQLite on the instance; it can be lost on redeploy. To keep data across deploys, use an external database (see below).
 
 **If you see "Application failed to respond":** Open your service → **Deployments** → click the latest deploy → **View logs**. Then: (1) Set **Start Command** (Settings → Deploy) to `sh run.sh` or `uvicorn app.main:app --host 0.0.0.0 --port $PORT` so the app listens on Railway’s port. (2) Ensure **Variables** includes `SECRET_KEY`. (3) Fix any Python or import errors shown in the logs.
+
+---
+
+## Use an external database (Railway Postgres)
+
+To keep users and workouts across redeploys, use Railway’s Postgres instead of SQLite.
+
+1. **Add Postgres:** In your Railway project, click **+ New** → **Database** → **PostgreSQL**. Railway creates a Postgres service.
+
+2. **Connect the app:** Click your **app service** (the one running the code) → **Variables**. Railway may already add a variable like `DATABASE_URL` from the Postgres service. If not, open the **Postgres** service → **Variables** (or **Connect**) tab, copy the **`DATABASE_URL`** value (e.g. `postgresql://postgres:xxx@xxx.railway.app:5432/railway`), then in your **app** service add a variable:
+   - Name: `DATABASE_URL`
+   - Value: paste the URL (use **Private URL** if shown, so it’s in Railway’s network).
+
+3. **Run migrations once:** The app creates tables on startup via `create_db_and_tables()`, so after you set `DATABASE_URL` and redeploy, the next deploy will create tables in Postgres. No need to run Alembic unless you prefer it; your current code uses `SQLModel.metadata.create_all(engine)` on startup.
+
+4. **Redeploy:** Trigger a new deploy (push a commit or click Redeploy). The app will use Postgres and data will persist across future deploys.
+
+**Note:** The repo includes `psycopg2-binary` in `requirements.txt` and the app uses `DATABASE_URL` from config; no code changes needed beyond what’s already there.
 
 ---
 
